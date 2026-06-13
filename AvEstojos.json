@@ -1,0 +1,20 @@
+ [
+    {"diametro_nominal":"0,5 (1/2\")","diametro_mm":12.7,"d_min_b16_5":8.3,"d_min_b16_47":10.8,"passo_rosca":13,"H_nom":12.29,"F_nom":21.91,"ligamento":4.6,"F_min":17.3,"H_min":6.1},
+    {"diametro_nominal":"0,625 (5/8\")","diametro_mm":15.88,"d_min_b16_5":10.3,"d_min_b16_47":13.5,"passo_rosca":11,"H_nom":15.47,"F_nom":26.58,"ligamento":5.35,"F_min":21.2,"H_min":7.7},
+    {"diametro_nominal":"0,75 (3/4\")","diametro_mm":19.05,"d_min_b16_5":12.4,"d_min_b16_47":16.2,"passo_rosca":10,"H_nom":18.64,"F_nom":31.27,"ligamento":6.11,"F_min":25.2,"H_min":9.3},
+    {"diametro_nominal":"0,875 (7/8\")","diametro_mm":22.23,"d_min_b16_5":14.4,"d_min_b16_47":18.9,"passo_rosca":9,"H_nom":21.82,"F_nom":35.97,"ligamento":6.87,"F_min":29.1,"H_min":10.9},
+    {"diametro_nominal":"1,0 (1\")","diametro_mm":25.4,"d_min_b16_5":16.5,"d_min_b16_47":21.6,"passo_rosca":8,"H_nom":24.99,"F_nom":40.64,"ligamento":7.62,"F_min":33.0,"H_min":12.5},
+    {"diametro_nominal":"1,125 (1 1/8\")","diametro_mm":28.58,"d_min_b16_5":18.6,"d_min_b16_47":24.3,"passo_rosca":8,"H_nom":28.17,"F_nom":45.31,"ligamento":8.37,"F_min":36.9,"H_min":14.1},
+    {"diametro_nominal":"1,25 (1 1/4\")","diametro_mm":31.75,"d_min_b16_5":20.6,"d_min_b16_47":27.0,"passo_rosca":8,"H_nom":30.96,"F_nom":50.01,"ligamento":9.13,"F_min":40.9,"H_min":15.5},
+    {"diametro_nominal":"1,375 (1 3/8\")","diametro_mm":34.93,"d_min_b16_5":22.7,"d_min_b16_47":29.7,"passo_rosca":8,"H_nom":34.14,"F_nom":54.7,"ligamento":9.89,"F_min":44.8,"H_min":17.1},
+    {"diametro_nominal":"1,5 (1 1/2\")","diametro_mm":38.1,"d_min_b16_5":24.8,"d_min_b16_47":32.4,"passo_rosca":8,"H_nom":37.31,"F_nom":59.37,"ligamento":10.64,"F_min":48.7,"H_min":18.7},
+    {"diametro_nominal":"1,625 (1 5/8\")","diametro_mm":41.28,"d_min_b16_5":26.8,"d_min_b16_47":35.1,"passo_rosca":8,"H_nom":40.49,"F_nom":64.05,"ligamento":11.39,"F_min":52.7,"H_min":20.2},
+    {"diametro_nominal":"1,75 (1 3/4\")","diametro_mm":44.45,"d_min_b16_5":28.9,"d_min_b16_47":37.8,"passo_rosca":8,"H_nom":43.66,"F_nom":68.73,"ligamento":12.14,"F_min":56.6,"H_min":21.8},
+    {"diametro_nominal":"1,875 (1 7/8\")","diametro_mm":47.63,"d_min_b16_5":31.0,"d_min_b16_47":40.5,"passo_rosca":8,"H_nom":46.84,"F_nom":73.43,"ligamento":12.9,"F_min":60.5,"H_min":23.4},
+    {"diametro_nominal":"2,0 (2\")","diametro_mm":50.8,"d_min_b16_5":33.0,"d_min_b16_47":43.2,"passo_rosca":8,"H_nom":50.01,"F_nom":78.11,"ligamento":13.65,"F_min":64.5,"H_min":25.0},
+    {"diametro_nominal":"2,25 (2 1/4\")","diametro_mm":57.15,"d_min_b16_5":37.1,"d_min_b16_47":48.6,"passo_rosca":8,"H_nom":55.96,"F_nom":87.48,"ligamento":15.16,"F_min":72.3,"H_min":28.0},
+    {"diametro_nominal":"2,5 (2 1/2\")","diametro_mm":63.5,"d_min_b16_5":41.3,"d_min_b16_47":54.0,"passo_rosca":8,"H_nom":62.31,"F_nom":96.84,"ligamento":16.67,"F_min":80.2,"H_min":31.2},
+    {"diametro_nominal":"2,75 (2 3/4\")","diametro_mm":69.85,"d_min_b16_5":45.4,"d_min_b16_47":59.4,"passo_rosca":8,"H_nom":68.66,"F_nom":106.2,"ligamento":18.17,"F_min":88.0,"H_min":34.3},
+    {"diametro_nominal":"3,0 (3\")","diametro_mm":76.2,"d_min_b16_5":49.5,"d_min_b16_47":64.8,"passo_rosca":8,"H_nom":75.01,"F_nom":115.57,"ligamento":19.69,"F_min":95.9,"H_min":37.5},
+    {"diametro_nominal":"3,5 (3 1/2\")","diametro_mm":88.9,"d_min_b16_5":57.8,"d_min_b16_47":75.6,"passo_rosca":8,"H_nom":87.33,"F_nom":134.3,"ligamento":22.7,"F_min":111.6,"H_min":43.7}
+  ]
