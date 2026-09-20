@@ -38,7 +38,7 @@ class FlangeCheckTests(unittest.TestCase):
             self.assertEqual(sum(c.value.startswith("Nominal:") for c in app.caption), 4)
             for w in app.number_input:
                 w.set_value(100.)
-            app.button[0].click().run()
+            app.button(key="avaliar_ligacao").click().run()
             self.assertFalse(app.exception)
             texto = " ".join(x.value for tipo in (app.markdown, app.caption, app.subheader) for x in tipo)
             self.assertIn("FlangeCheck", texto)
