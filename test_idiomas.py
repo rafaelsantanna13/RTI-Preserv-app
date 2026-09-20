@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 from streamlit.testing.v1 import AppTest
 from traducoes import traduzir, nome_tipo, nome_norma
+from interface import exibir_nps
 
 ROOT = Path(__file__).resolve().parent
 
@@ -26,6 +27,22 @@ class LanguageTests(unittest.TestCase):
                 self.assertEqual(nome_tipo(chave, "en"), ingles)
                 self.assertNotEqual(nome_tipo(chave, "pt"), ingles)
         self.assertEqual(nome_norma("ASME B16.47 Série A", "en"), "ASME B16.47 Series A")
+
+    def test_nps_decimal_separator_is_visual_only(self):
+        self.assertEqual(exibir_nps('0,5 (½")', "en"), '0.5 (½")')
+        self.assertEqual(exibir_nps('0,5 (½")', "pt"), '0,5 (½")')
+        self.assertEqual(exibir_nps('2,5 (2½")', "en"), '2.5 (2½")')
+
+    def test_nps_language_switch_preserves_selected_value(self):
+        app = AppTest.from_file(str(ROOT / "appvisu.py")).run()
+        self.assertFalse(app.exception)
+        valor_original = app.selectbox(key="nps").value
+        app.get("segmented_control")[0].set_value("en").run()
+        self.assertFalse(app.exception)
+        self.assertEqual(app.selectbox(key="nps_en").value, valor_original)
+        app.get("segmented_control")[0].set_value("pt").run()
+        self.assertFalse(app.exception)
+        self.assertEqual(app.selectbox(key="nps").value, valor_original)
 
     def test_language_switch_rebuilds_type_selector(self):
         app = AppTest.from_file(str(ROOT / "appvisu.py")).run()
