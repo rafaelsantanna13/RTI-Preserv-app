@@ -28,18 +28,21 @@ def selecionar(label, opcoes, key, **kwargs):
 
 def main():
     st.set_page_config(page_title="FlangeCheck", page_icon="🔩", layout="centered")
-    # Botões explícitos: permanecem visíveis no navegador móvel.
+    # Um único controle horizontal evita que duas colunas empilhem no celular.
     if "idioma" not in st.session_state:
         st.session_state["idioma"] = "pt"
-    col_pt, col_en = st.columns(2)
-    with col_pt:
-        if st.button("🇧🇷 Português", key="idioma_pt", use_container_width=True,
-                     type="primary" if st.session_state["idioma"] == "pt" else "secondary"):
-            st.session_state["idioma"] = "pt"
-    with col_en:
-        if st.button("🇺🇸 English", key="idioma_en", use_container_width=True,
-                     type="primary" if st.session_state["idioma"] == "en" else "secondary"):
-            st.session_state["idioma"] = "en"
+    idioma = st.segmented_control(
+        "Idioma / Language",
+        options=["pt", "en"],
+        format_func=lambda valor: "🇧🇷 Português" if valor == "pt" else "🇺🇸 English",
+        default=st.session_state["idioma"],
+        selection_mode="single",
+        key="seletor_idioma",
+        label_visibility="collapsed",
+        width="stretch",
+    )
+    if idioma is not None:
+        st.session_state["idioma"] = idioma
     st.markdown("""
     <style>
     .block-container {max-width: 960px; padding-top: 2rem; padding-bottom: 3rem;}
