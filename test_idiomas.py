@@ -17,7 +17,7 @@ class LanguageTests(unittest.TestCase):
     def test_flag_switch_keeps_dimensions(self):
         app = AppTest.from_file(str(ROOT / "appvisu.py")).run()
         self.assertFalse(app.exception)
-        self.assertEqual(app.button(key="idioma_pt").type, "primary")
+        self.assertEqual(app.get("segmented_control")[0].value, "pt")
         self.assertEqual(app.button(key="avaliar_ligacao").label, "Avaliar ligação")
         original = app.metric[0].value
         for widget in app.number_input:
@@ -25,12 +25,12 @@ class LanguageTests(unittest.TestCase):
         app.button(key="avaliar_ligacao").click().run()
         self.assertFalse(app.exception)
         self.assertTrue(app.success)
-        app.button(key="idioma_en").click().run()
+        app.get("segmented_control")[0].set_value("en").run()
         self.assertFalse(app.exception)
         self.assertEqual(app.metric[0].value, original)
         self.assertEqual(app.button(key="avaliar_ligacao").label, "Assess connection")
         self.assertTrue(any("PASSES DIMENSIONAL CRITERIA" in item.value for item in app.success))
-        app.button(key="idioma_pt").click().run()
+        app.get("segmented_control")[0].set_value("pt").run()
         self.assertEqual(app.button(key="avaliar_ligacao").label, "Avaliar ligação")
         self.assertTrue(any("APROVADO NO CRITÉRIO" in item.value for item in app.success))
 
