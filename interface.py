@@ -28,10 +28,18 @@ def selecionar(label, opcoes, key, **kwargs):
 
 def main():
     st.set_page_config(page_title="FlangeCheck", page_icon="🔩", layout="centered")
-    idioma = st.radio("Idioma / Language", ["🇧🇷", "🇺🇸"], horizontal=True,
-                      label_visibility="collapsed", key="bandeira",
-                      index=0 if st.session_state.get("idioma", "pt") == "pt" else 1)
-    st.session_state["idioma"] = "pt" if idioma == "🇧🇷" else "en"
+    # Botões explícitos: permanecem visíveis no navegador móvel.
+    if "idioma" not in st.session_state:
+        st.session_state["idioma"] = "pt"
+    col_pt, col_en = st.columns(2)
+    with col_pt:
+        if st.button("🇧🇷 Português", key="idioma_pt", use_container_width=True,
+                     type="primary" if st.session_state["idioma"] == "pt" else "secondary"):
+            st.session_state["idioma"] = "pt"
+    with col_en:
+        if st.button("🇺🇸 English", key="idioma_en", use_container_width=True,
+                     type="primary" if st.session_state["idioma"] == "en" else "secondary"):
+            st.session_state["idioma"] = "en"
     st.markdown("""
     <style>
     .block-container {max-width: 960px; padding-top: 2rem; padding-bottom: 3rem;}
