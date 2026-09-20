@@ -55,9 +55,9 @@ def main():
       <h1>FlangeCheck</h1>
       <p>{descricao}<br>{subtitulo}</p>
     </div>
-    """.format(eyebrow=t("INTEGRIDADE · LIGAÇÕES FLANGEADAS"),
-               descricao=t("Avaliação dimensional de ligações flangeadas."),
-               subtitulo=t("Medições claras. Decisões objetivas.")), unsafe_allow_html=True)
+    """.replace("{eyebrow}", t("INTEGRIDADE · LIGAÇÕES FLANGEADAS"))
+       .replace("{descricao}", t("Avaliação dimensional de ligações flangeadas."))
+       .replace("{subtitulo}", t("Medições claras. Decisões objetivas.")), unsafe_allow_html=True)
     st.caption(t("FlangeCheck · versão 3.1 · Avaliação dimensional"))
 
     with st.container(border=True):
