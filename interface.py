@@ -3,7 +3,8 @@ from html import escape
 
 import streamlit as st
 
-from avaliacao import avaliar, estojos, flanges, rti, to_float
+from avaliacao import avaliar, flanges, rti, to_float
+from estojos import CORRELACAO, consultar_estojo, norma_do_tipo
 
 
 def numero(valor):
@@ -57,7 +58,10 @@ def main():
     with st.container(border=True):
         st.markdown('<div class="rti-step">ETAPA 01</div>', unsafe_allow_html=True)
         st.subheader("Identifique a junta")
-        tipo = selecionar("Tipo de flange", sorted({f["tipo"] for f in flanges}), "tipo")
+        norma = selecionar("Norma / série", ["ASME B16.5", "ASME B16.47 Série A"], "norma")
+        tipo = selecionar("Tipo de flange", sorted({f["tipo"] for f in flanges
+                          if norma_do_tipo(f["tipo"]) == norma}), "tipo",
+                          format_func=lambda valor: valor.removeprefix(norma + " "))
         disponiveis = [f for f in flanges if f["tipo"] == tipo]
         c1, c2 = st.columns(2)
         with c1:
@@ -66,9 +70,34 @@ def main():
         with c2:
             classe = selecionar("Classe do flange",
                                 sorted({f["classe"] for f in disponiveis if f["nps_pol"] == nps}, key=int), "classe")
-        diametro = selecionar("Diâmetro nominal do estojo (pol)",
-                              [e["diametro_nominal"] for e in sorted(estojos, key=lambda e: e["diametro_mm"])], "estojo")
-        st.caption("As opções de NPS e classe acompanham o tipo de flange selecionado.")
+        try:
+            selecao = consultar_estojo(tipo, nps, classe)
+        except ValueError as erro:
+            st.session_state.pop("avaliacao_atual", None)
+            st.error(str(erro))
+            st.stop()
+        diametro = selecao["diametro_nominal"]
+        st.metric("Diâmetro nominal do estojo · automático", f'{selecao["diametro_pol"]}″')
+        st.caption(f'{numero(selecao["diametro_mm"])} mm · Definido por {norma}, NPS {nps} e classe {classe}.')
+        st.caption("O diâmetro nominal é automático. O diâmetro medido em campo deve ser informado na etapa 3.")
+        with st.expander("Fonte do diâmetro do estojo"):
+            fonte = CORRELACAO["fontes"]["sigma"]
+            if norma == "ASME B16.5" and ordem_nps(nps) == 22:
+                url = CORRELACAO["fontes"]["texas_b16_5_22"]["urls"][classe]
+                st.markdown(f"[Texas Flange · Classe {classe}, NPS 22]({url})")
+                st.caption("Diâmetro nominal do estojo obtido da furação, conforme a nota (a) da tabela: furo 1/8 pol maior que o estojo.")
+            else:
+                st.markdown(f'[{fonte["titulo"]}]({fonte["url"]})')
+                st.caption(f'Página {fonte["paginas"][norma]} · coluna Stud Diameter.')
+            st.caption("Correlação consultada em 20/09/2026. O cadastro de avaliação B16.47 deste aplicativo contempla a Série A.")
+
+    estojo = selecao["criterios"]
+    if estojo is None:
+        st.session_state.pop("avaliacao_atual", None)
+        st.warning(f'O estojo desta combinação é {selecao["diametro_pol"]}″. '
+                   "Os limites de avaliação do estojo e da porca ainda não estão cadastrados "
+                   "para esse tamanho. O diâmetro nominal está disponível, mas a avaliação RTI fica indisponível até completar esses critérios.")
+        st.stop()
 
     with st.container(border=True):
         st.markdown('<div class="rti-step">ETAPA 02</div>', unsafe_allow_html=True)
@@ -84,7 +113,6 @@ def main():
                                 sorted({r["historico_do_sistema"] for r in rti}), key="historico")
 
     flange = next(f for f in disponiveis if f["nps_pol"] == nps and f["classe"] == classe)
-    estojo = next(e for e in estojos if e["diametro_nominal"] == diametro)
     limites = [to_float(flange["tfmin_mm"]),
                estojo["d_min_b16_47"] if "B16.47" in tipo else estojo["d_min_b16_5"],
                estojo["H_min"], estojo["F_min"]]
@@ -125,7 +153,7 @@ def main():
         else:
             st.error("REPROVADO NO CRITÉRIO DIMENSIONAL · Há medidas abaixo dos mínimos cadastrados.")
 
-        resultado = avaliar(nps, classe, tipo, diametro, mat_f, mat_e, fluido,
+        resultado = avaliar(nps, classe, tipo, mat_f, mat_e, fluido,
                             historico, perda, *medidas)
         if resultado.startswith("RTI: "):
             classificacao, preservacao = resultado[5:].split("\nPreservação: ", 1)
