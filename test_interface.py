@@ -26,7 +26,7 @@ class InterfaceTests(unittest.TestCase):
     def preencher(self, app, valores):
         for i, valor in enumerate(valores):
             app.number_input(key=f"medida_{i}").set_value(valor)
-        app.button[0].click().run()
+        app.button(key="avaliar_ligacao").click().run()
         self.assertFalse(app.exception)
 
     def selecionar_tipo(self, app, tipo):
@@ -36,7 +36,7 @@ class InterfaceTests(unittest.TestCase):
     def test_entradas_e_campos_vazios(self):
         for entrada in ("app.py", "appvisu.py"):
             app = self.abrir(entrada)
-            app.button[0].click().run()
+            app.button(key="avaliar_ligacao").click().run()
             self.assertTrue(app.warning)
             self.assertFalse(app.success)
             self.assertFalse(app.error)
