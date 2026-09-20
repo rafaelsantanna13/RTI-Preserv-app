@@ -1,7 +1,10 @@
-# RTI + Preservação
+# FlangeCheck
 
-Aplicativo Streamlit para comparação dimensional de flanges, estojos e porcas,
-consulta da classificação RTI e orientação de preservação nas tabelas do projeto.
+**Avaliação dimensional de juntas flangeadas.**
+
+Compare as medidas de flange, estojo e porca com os mínimos cadastrados.
+O resultado é exclusivamente dimensional: aprovado ou reprovado, com o
+nominal, o mínimo e o medido de cada dimensão.
 
 ## Executar
 
@@ -10,48 +13,48 @@ python -m pip install -r requirements.txt
 python -m streamlit run appvisu.py
 ```
 
-`app.py` também abre a mesma interface. No Streamlit Community Cloud, mantenha
-o arquivo de entrada já configurado; ambas as entradas são suportadas.
+`app.py` e `appvisu.py` abrem a mesma interface. O nome da interface e o título
+do navegador são FlangeCheck; o repositório e o endereço de hospedagem atuais
+são mantidos para preservar a publicação existente.
 
-## Interface
+## Utilizar
 
-1. Identifique a junta: norma/série, tipo de flange, NPS e classe.
-   O diâmetro nominal do estojo é informado automaticamente em polegadas e mm.
-2. Informe materiais, fluido, perda de massa e histórico.
-3. Preencha as quatro medições em mm e pressione **Avaliar junta**.
+1. Selecione norma/série, tipo, NPS e classe. O estojo nominal é automático.
+2. Informe as quatro medições em mm e pressione **Avaliar junta**.
 
-O resultado mostra a aprovação dimensional, a classificação RTI, a preservação
-e uma comparação individual entre cada medida e seu mínimo cadastrado.
-Alterar qualquer entrada remove o resultado anterior até uma nova avaliação.
-Os seletores de NPS e classe mostram somente combinações cadastradas.
+Os campos e os resultados mostram os valores **nominal**, **mínimo** e
+**medido**. O nominal é uma referência; a aprovação usa `medido >= mínimo`
+nas quatro dimensões. Alterar qualquer entrada invalida o resultado anterior.
 
-## Organização
+Não há consulta ou sugestão de RTI/preservação nem campos para materiais,
+fluido, histórico ou perda de massa. `ClasseRTI.json` permanece apenas como
+arquivo histórico, sem importação, leitura ou uso durante a execução.
 
-- `interface.py`: tela compartilhada, validação das entradas e apresentação.
-- `avaliacao.py`: função de avaliação original, sem mudança dos critérios.
-- `estojos.py`: consulta exata do estojo pela norma/série, NPS e classe;
-  a avaliação também usa essa consulta, sem aceitar diâmetro nominal manual.
-- `DiametrosEstojos.json`: correlação e fontes públicas dos fabricantes.
-- `AvFlanges.json`, `AvEstojosPorcas.json`, `ClasseRTI.json`: tabelas originais.
-- `.streamlit/config.toml`: cores do tema.
+## Valores de referência
 
-Esta revisão mantém os critérios de comparação e as tabelas originais de
-limites e RTI. A escolha automática do estojo pode mudar o resultado em relação
-a uma escolha manual incompatível com o flange. Não constitui uma revalidação
-técnica dos limites de perda admissível cadastrados.
+- Espessura nominal do flange: `tf_flange_mm` de `AvFlanges.json`.
+- Diâmetro nominal do estojo: correlação por norma/série, NPS e classe,
+  convertida de polegadas para mm.
+- Altura e largura nominais da porca: `H_nom` e `F_nom` de `AvEstojosPorcas.json`.
+- Os quatro mínimos são os originalmente cadastrados nessas tabelas.
 
 A correlação cobre as 181 combinações distintas (289 linhas de flange) do
-cadastro atual: ASME B16.5 e ASME B16.47 Série A. Consulte
-[fontes, cobertura e lacunas de critérios](docs/correlacao-estojos.md).
+cadastro atual: B16.5 e B16.47 Série A. Confira
+[fontes e lacunas de critérios](docs/correlacao-estojos.md).
+A ausência dos limites para alguns estojos mantém a avaliação indisponível;
+nenhum limite é extrapolado.
 
-## Verificação
+## Código e testes
+
+- `interface.py`: tela compartilhada.
+- `avaliacao.py`: referências e comparação dimensional, sem classificação adicional.
+- `estojos.py` e `DiametrosEstojos.json`: seleção automática do nominal.
 
 ```sh
 python -m unittest -v
 ```
 
-Os testes verificam as duas entradas, campos vazios, igualdade ao limite,
-reprovação individual, resultados obsoletos, ausência de classificação RTI e
-combinações disponíveis nos seletores, valores de referência dos estojos,
-seleção automática, mudanças dos limites, cobertura do cadastro e bloqueio
-da avaliação quando faltam critérios para o diâmetro nominal identificado.
+Os testes cobrem correlação, valores nominais, aprovação pelo mínimo,
+reprovação individual, entradas inválidas, atualização dos campos e remoção
+das sugestões anteriores. Os critérios técnicos das tabelas não foram
+revalidados nesta revisão.
