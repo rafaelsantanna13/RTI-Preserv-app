@@ -46,7 +46,7 @@ class FlangeCheckTests(unittest.TestCase):
             self.assertNotIn("Preservação", texto)
             cards = [m.value for m in app.markdown if m.value.startswith("Medido:")]
             self.assertEqual(len(cards), 4)
-            self.assertTrue(all("Nominal:" in c and "Mínimo:" in c for c in cards))
+            self.assertTrue(all("Nominal:" in c and "Mínimo aceitável:" in c for c in cards))
 
 
 if __name__ == "__main__":
