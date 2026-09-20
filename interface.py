@@ -100,16 +100,8 @@ def main():
         st.metric(t("Diâmetro nominal do estojo · automático"), f'{selecao["diametro_pol"]}″')
         st.caption(t("{diametro} mm · Definido por {norma}, NPS {nps} e classe {classe}.").format(diametro=numero(selecao["diametro_mm"]), norma=norma, nps=nps, classe=classe))
         st.caption(t("O diâmetro nominal é automático. O diâmetro medido em campo deve ser informado na etapa 2."))
-        with st.expander(t("Fonte do diâmetro do estojo")):
-            fonte = CORRELACAO["fontes"]["sigma"]
-            if norma == "ASME B16.5" and ordem_nps(nps) == 22:
-                url = CORRELACAO["fontes"]["texas_b16_5_22"]["urls"][classe]
-                st.markdown(f'[Texas Flange · {t("Classe")} {classe}, NPS 22]({url})')
-                st.caption(t("Diâmetro nominal do estojo obtido da furação, conforme a nota (a) da tabela: furo 1/8 pol maior que o estojo."))
-            else:
-                st.markdown(f'[{fonte["titulo"]}]({fonte["url"]})')
-                st.caption(t("Página {pagina} · coluna Stud Diameter.").format(pagina=fonte["paginas"][norma]))
-            st.caption(t("Correlação consultada em 20/09/2026. O cadastro de avaliação B16.47 deste aplicativo contempla a Série A."))
+        with st.expander(t("Norma de referência")):
+            st.markdown(f"**{norma}**")
 
     estojo = selecao["criterios"]
     if estojo is None:
@@ -136,7 +128,7 @@ def main():
                         step=0.1, format="%.2f", placeholder=t("Digite a medida"),
                         key=f"medida_{i}"))
                     st.caption(f'{t("Nominal")}: **{numero(nominais[i])} mm**')
-                    st.caption(f'{t("Mínimo cadastrado")}: **{numero(limites[i])} mm**')
+                    st.caption(f'{t("Mínimo aceitável")}: **{numero(limites[i])} mm**')
 
     assinatura = ("FlangeCheck-3", tipo, nps, classe, diametro, *medidas)
     if st.session_state.get("avaliacao_atual") != assinatura:
@@ -172,7 +164,7 @@ def main():
                     st.markdown(
                         f'{t("Medido")}: **{numero(medidas[i])} mm**  \n'
                         f'{t("Nominal")}: **{numero(nominais[i])} mm**  \n'
-                        f'{t("Mínimo")}: **{numero(limites[i])} mm**'
+                        f'{t("Mínimo aceitável")}: **{numero(limites[i])} mm**'
                     )
                     diferenca = medidas[i] - limites[i]
                     sinal = "+" if diferenca >= 0 else ""
