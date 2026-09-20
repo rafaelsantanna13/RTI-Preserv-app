@@ -5,7 +5,7 @@ from pathlib import Path
 
 from avaliacao import avaliar, referencias, flanges, to_float
 from estojos import CORRELACAO, consultar_estojo, norma_do_tipo
-from traducoes import traduzir, nome_tipo
+from traducoes import traduzir, nome_tipo, nome_norma
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -88,10 +88,29 @@ def main():
     with st.container(border=True):
         st.markdown(f'<div class="fc-step">{t("ETAPA 01")}</div>', unsafe_allow_html=True)
         st.subheader(t("Identifique a ligação"))
-        norma = selecionar(t("Norma / série"), ["ASME B16.5", "ASME B16.47 Série A"], "norma")
-        tipo = selecionar(t("Tipo de flange"), sorted({f["tipo"] for f in flanges
-                          if norma_do_tipo(f["tipo"]) == norma}), "tipo",
-                          format_func=lambda valor: nome_tipo(valor.removeprefix(norma + " "), st.session_state["idioma"]))
+        norma = selecionar(
+            t("Norma / série"), ["ASME B16.5", "ASME B16.47 Série A"], "norma",
+            format_func=lambda valor: nome_norma(valor, st.session_state["idioma"]),
+        )
+        tipos_disponiveis = sorted({f["tipo"] for f in flanges
+                                   if norma_do_tipo(f["tipo"]) == norma})
+        # Chaves distintas por idioma obrigam o Streamlit a reconstruir as
+        # opções traduzidas (inclusive o valor já selecionado) no navegador.
+        # O valor técnico permanece em português, como nas tabelas de engenharia.
+        idioma_atual = st.session_state["idioma"]
+        chave_tipo = "tipo" if idioma_atual == "pt" else "tipo_en"
+        tipo_anterior = st.session_state.get("tipo_canonico")
+        if tipo_anterior not in tipos_disponiveis:
+            tipo_anterior = tipos_disponiveis[0]
+        if (st.session_state.get("idioma_tipo_anterior") != idioma_atual
+                or st.session_state.get(chave_tipo) not in tipos_disponiveis):
+            st.session_state[chave_tipo] = tipo_anterior
+        tipo = selecionar(
+            t("Tipo de flange"), tipos_disponiveis, chave_tipo,
+            format_func=lambda valor: nome_tipo(valor, idioma_atual),
+        )
+        st.session_state["tipo_canonico"] = tipo
+        st.session_state["idioma_tipo_anterior"] = idioma_atual
         disponiveis = [f for f in flanges if f["tipo"] == tipo]
         c1, c2 = st.columns(2)
         with c1:
