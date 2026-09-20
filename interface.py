@@ -1,10 +1,20 @@
 """Interface compartilhada pelas duas entradas do Streamlit."""
 
 import streamlit as st
+from pathlib import Path
 
 from avaliacao import avaliar, referencias, flanges, to_float
 from estojos import CORRELACAO, consultar_estojo, norma_do_tipo
 from traducoes import traduzir, nome_tipo
+
+
+BASE_DIR = Path(__file__).resolve().parent
+
+
+def caminho_imagem_medicao(idioma):
+    """Imagem ilustrativa escolhida pelo idioma; sem alterar critérios dimensionais."""
+    nome = "dimensoes_medicao_en.png" if idioma == "en" else "dimensoes_medicao_pt.png"
+    return BASE_DIR / "assets" / nome
 
 
 def numero(valor):
@@ -135,6 +145,17 @@ def main():
         st.markdown(f'<div class="fc-step">{t("ETAPA 02")}</div>', unsafe_allow_html=True)
         st.subheader(t("Informe as medições"))
         st.caption(t("Todas as medidas em milímetros. Preencha as quatro dimensões medidas em campo."))
+        with st.expander(t("Guia visual das medições"), expanded=True):
+            st.caption(t("Identifique no desenho as dimensões tf, D, H e F antes de medir."))
+            imagem = caminho_imagem_medicao(st.session_state.get("idioma", "pt"))
+            if imagem.is_file():
+                st.image(
+                    str(imagem),
+                    caption=t("Dimensões do flange, estojo e porca (ilustração esquemática)."),
+                    use_container_width=True,
+                )
+            else:
+                st.caption(t("O desenho neste idioma estará disponível em breve."))
         for inicio in (0, 2):
             colunas = st.columns(2)
             for i in range(inicio, inicio + 2):
