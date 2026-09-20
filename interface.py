@@ -27,7 +27,7 @@ def selecionar(label, opcoes, key, **kwargs):
 
 
 def main():
-    st.set_page_config(page_title="FlangeCheck | Dimensional assessment", page_icon="🔩", layout="centered")
+    st.set_page_config(page_title="FlangeCheck", page_icon="🔩", layout="centered")
     idioma = st.radio("Idioma / Language", ["🇧🇷", "🇺🇸"], horizontal=True,
                       label_visibility="collapsed", key="bandeira",
                       index=0 if st.session_state.get("idioma", "pt") == "pt" else 1)
@@ -154,11 +154,14 @@ def main():
                         st.success(t("Atende ao mínimo"))
                     else:
                         st.error(t("Abaixo do mínimo"))
-                    st.markdown(f'{t("Medido")}: **{numero(medidas[i])} mm**  \n"
-                                f'{t("Nominal")}: **{numero(nominais[i])} mm**  \n"
-                                f'{t("Mínimo")}: **{numero(limites[i])} mm**')
+                    st.markdown(
+                        f'{t("Medido")}: **{numero(medidas[i])} mm**  \\n'
+                        f'{t("Nominal")}: **{numero(nominais[i])} mm**  \\n'
+                        f'{t("Mínimo")}: **{numero(limites[i])} mm**'
+                    )
                     diferenca = medidas[i] - limites[i]
-                    st.caption(f'{t("Diferença")}: {+' if diferenca >= 0 else ''}{numero(diferenca)} mm')
+                    sinal = "+" if diferenca >= 0 else ""
+                    st.caption(f'{t("Diferença")}: {sinal}{numero(diferenca)} mm')
     else:
         st.caption(t("Preencha ou revise os dados e toque em Avaliar ligação para obter o resultado atualizado."))
 
