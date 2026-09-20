@@ -17,21 +17,21 @@ class LanguageTests(unittest.TestCase):
     def test_flag_switch_keeps_dimensions(self):
         app = AppTest.from_file(str(ROOT / "appvisu.py")).run()
         self.assertFalse(app.exception)
-        self.assertEqual(app.radio(key="bandeira").value, "🇧🇷")
-        self.assertEqual(app.button[0].label, "Avaliar ligação")
+        self.assertEqual(app.button(key="idioma_pt").type, "primary")
+        self.assertEqual(app.button(key="avaliar_ligacao").label, "Avaliar ligação")
         original = app.metric[0].value
         for widget in app.number_input:
             widget.set_value(100.)
-        app.button[0].click().run()
+        app.button(key="avaliar_ligacao").click().run()
         self.assertFalse(app.exception)
         self.assertTrue(app.success)
-        app.radio(key="bandeira").set_value("🇺🇸").run()
+        app.button(key="idioma_en").click().run()
         self.assertFalse(app.exception)
         self.assertEqual(app.metric[0].value, original)
-        self.assertEqual(app.button[0].label, "Assess connection")
+        self.assertEqual(app.button(key="avaliar_ligacao").label, "Assess connection")
         self.assertTrue(any("PASSES DIMENSIONAL CRITERIA" in item.value for item in app.success))
-        app.radio(key="bandeira").set_value("🇧🇷").run()
-        self.assertEqual(app.button[0].label, "Avaliar ligação")
+        app.button(key="idioma_pt").click().run()
+        self.assertEqual(app.button(key="avaliar_ligacao").label, "Avaliar ligação")
         self.assertTrue(any("APROVADO NO CRITÉRIO" in item.value for item in app.success))
 
 
