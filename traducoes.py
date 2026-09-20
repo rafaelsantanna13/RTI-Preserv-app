@@ -17,6 +17,8 @@ TRANSLATIONS = {
     "O diâmetro nominal é automático. O diâmetro medido em campo deve ser informado na etapa 2.": "The nominal diameter is selected automatically. Enter the measured stud diameter in step 2.",
     "Fonte do diâmetro do estojo": "Stud diameter source",
     "Norma de referência": "Reference standard",
+    "Referências dos valores mínimos aceitáveis": "References for acceptable minimum values",
+    "Referências técnicas da avaliação de corrosão. Os limites numéricos utilizados são os cadastrados no aplicativo; a correspondência de cada valor com os artigos não foi verificada nesta revisão.": "Technical references on corrosion assessment. Numerical limits are taken from the application database; the correspondence of each value to these papers has not been verified in this revision.",
     "Mínimo aceitável": "Acceptable minimum",
     "Classe": "Class",
     "Diâmetro nominal do estojo obtido da furação, conforme a nota (a) da tabela: furo 1/8 pol maior que o estojo.": "Nominal stud diameter obtained from bolt-hole diameter per table note (a): hole 1/8 in larger than stud.",
