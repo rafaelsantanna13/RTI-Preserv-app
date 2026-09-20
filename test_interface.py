@@ -1,0 +1,75 @@
+"""Regressões da interface. Execute: python -m unittest -v test_interface.py."""
+import unittest
+from pathlib import Path
+
+from streamlit.testing.v1 import AppTest
+
+from avaliacao import estojos, flanges, to_float
+
+ROOT = Path(__file__).resolve().parent
+
+
+class InterfaceTests(unittest.TestCase):
+    def abrir(self, entrada="appvisu.py"):
+        app = AppTest.from_file(str(ROOT / entrada)).run()
+        self.assertFalse(app.exception)
+        return app
+
+    def limites(self, app):
+        tipo, nps, classe, diametro = [app.selectbox(key=k).value for k in ("tipo", "nps", "classe", "estojo")]
+        flange = next(f for f in flanges if (f["tipo"], f["nps_pol"], f["classe"]) == (tipo, nps, classe))
+        estojo = next(e for e in estojos if e["diametro_nominal"] == diametro)
+        return [to_float(flange["tfmin_mm"]), estojo["d_min_b16_47"] if "B16.47" in tipo else estojo["d_min_b16_5"], estojo["H_min"], estojo["F_min"]]
+
+    def preencher(self, app, valores):
+        for i, valor in enumerate(valores):
+            app.number_input(key=f"medida_{i}").set_value(valor)
+        app.button[0].click().run()
+        self.assertFalse(app.exception)
+
+    def test_entradas_e_campos_vazios(self):
+        for entrada in ("app.py", "appvisu.py"):
+            app = self.abrir(entrada)
+            app.button[0].click().run()
+            self.assertTrue(app.warning)
+            self.assertFalse(app.success)
+            self.assertFalse(app.error)
+
+    def test_limites_e_reprovacao_individual(self):
+        app = self.abrir()
+        for tipo in sorted({f["tipo"] for f in flanges}):
+            app.selectbox(key="tipo").set_value(tipo).run()
+            limites = self.limites(app)
+            self.preencher(app, limites)
+            self.assertIn("APROVADO NO CRITÉRIO", app.success[0].value)
+            for i in range(4):
+                medidas = limites.copy()
+                medidas[i] -= 0.01
+                self.preencher(app, medidas)
+                self.assertIn("REPROVADO NO CRITÉRIO", app.error[0].value)
+                self.assertEqual(len(app.error), 2)
+
+    def test_resultado_obsoleto_e_rti_ausente(self):
+        app = self.abrir()
+        self.preencher(app, self.limites(app))
+        app.selectbox(key="fluido").set_value("BP").run()
+        self.assertFalse(app.success)
+        self.assertFalse(app.error)
+        app.selectbox(key="perda").set_value("Não").run()
+        self.preencher(app, [0.1] * 4)
+        self.assertIn("não encontrada", app.warning[0].value)
+        self.assertIn("REPROVADO", app.error[0].value)
+
+    def test_filtros_nao_oferecem_combinacoes_inexistentes(self):
+        app = self.abrir()
+        for tipo in sorted({f["tipo"] for f in flanges}):
+            app.selectbox(key="tipo").set_value(tipo).run()
+            for nps in list(app.selectbox(key="nps").options):
+                app.selectbox(key="nps").set_value(nps).run()
+                esperado = {f["classe"] for f in flanges if f["tipo"] == tipo and f["nps_pol"] == nps}
+                self.assertEqual(set(app.selectbox(key="classe").options), esperado)
+                self.assertFalse(app.exception)
+
+
+if __name__ == "__main__":
+    unittest.main()
