@@ -155,8 +155,8 @@ def main():
                     else:
                         st.error(t("Abaixo do mínimo"))
                     st.markdown(
-                        f'{t("Medido")}: **{numero(medidas[i])} mm**  \\n'
-                        f'{t("Nominal")}: **{numero(nominais[i])} mm**  \\n'
+                        f'{t("Medido")}: **{numero(medidas[i])} mm**  \n'
+                        f'{t("Nominal")}: **{numero(nominais[i])} mm**  \n'
                         f'{t("Mínimo")}: **{numero(limites[i])} mm**'
                     )
                     diferenca = medidas[i] - limites[i]
