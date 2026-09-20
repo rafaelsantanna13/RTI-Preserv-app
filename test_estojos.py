@@ -78,14 +78,13 @@ class CorrelacaoTests(unittest.TestCase):
     def test_calculo_usa_estojo_da_classe(self):
         # D=13 mm atende 3/4 pol na classe 150 (mínimo 12,4),
         # mas não 7/8 pol na classe 300 (mínimo 14,4).
-        args = ("Aço Carbono", "Aço Carbono", "APSO", "Sem histórico de perda", "Sim")
-        aprovado = avaliar("8", "150", B5, *args, 100., 13., 100., 100.)
-        reprovado = avaliar("8", "300", B5, *args, 100., 13., 100., 100.)
-        self.assertIn("RTI D", aprovado)
-        self.assertIn("RTI B + Estudo de Engenharia", reprovado)
-        incompleto = avaliar("48", "900", A47, *args, 300., 300., 300., 300.)
-        self.assertIn("não cadastrados", incompleto)
-        self.assertNotIn("RTI:", incompleto)
+        aprovado = avaliar("8", "150", B5, 100., 13., 100., 100.)
+        reprovado = avaliar("8", "300", B5, 100., 13., 100., 100.)
+        self.assertTrue(aprovado["aprovado"])
+        self.assertFalse(reprovado["aprovado"])
+        with self.assertRaisesRegex(ValueError, "não cadastrados"):
+            avaliar("48", "900", A47, 300., 300., 300., 300.)
+
 
 
 class AutomaticoInterfaceTests(unittest.TestCase):

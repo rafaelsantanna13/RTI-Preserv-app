@@ -3,8 +3,8 @@
 Consulta em 20/09/2026. Os dados de `DiametrosEstojos.json` são uma transcrição
 dos diâmetros nominais dos quadros públicos dos fabricantes, com conferência
 cruzada. Não são uma cópia licenciada das normas ASME; os quadros consultados
-não identificam a edição da norma. Os limites de perda admissível e as regras
-RTI do projeto não foram alterados nem revalidados nesta mudança.
+não identificam a edição da norma. Os limites de perda admissível do projeto não foram alterados nem revalidados.
+Desde o FlangeCheck 3.0, as sugestões de RTI e preservação estão desativadas.
 
 ## Chave de consulta
 
@@ -67,7 +67,7 @@ para a Série B.
 
 A correlação identifica alguns diâmetros que não existem em
 `AvEstojosPorcas.json`. A interface mostra o nominal, informa a ausência dos
-limites e interrompe a avaliação antes de aprovar/reprovar ou classificar RTI.
+limites e interrompe a avaliação antes de aprovar/reprovar.
 Não usa outro diâmetro nem extrapola limites de perda admissível.
 
 | Norma/série | NPS | Classe | Estojo sem critérios cadastrados |

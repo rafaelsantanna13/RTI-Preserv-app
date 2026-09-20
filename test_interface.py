@@ -55,15 +55,13 @@ class InterfaceTests(unittest.TestCase):
                 self.assertIn("REPROVADO NO CRITÉRIO", app.error[0].value)
                 self.assertEqual(len(app.error), 2)
 
-    def test_resultado_obsoleto_e_rti_ausente(self):
+    def test_resultado_obsoleto_ao_alterar_medida(self):
         app = self.abrir()
         self.preencher(app, self.limites(app))
-        app.selectbox(key="fluido").set_value("BP").run()
+        app.number_input(key="medida_0").set_value(0.1).run()
         self.assertFalse(app.success)
         self.assertFalse(app.error)
-        app.selectbox(key="perda").set_value("Não").run()
         self.preencher(app, [0.1] * 4)
-        self.assertIn("não encontrada", app.warning[0].value)
         self.assertIn("REPROVADO", app.error[0].value)
 
     def test_filtros_nao_oferecem_combinacoes_inexistentes(self):
