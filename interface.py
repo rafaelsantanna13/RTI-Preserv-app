@@ -135,7 +135,7 @@ def main():
     if st.session_state.get("avaliacao_atual") != assinatura:
         st.session_state.pop("avaliacao_atual", None)
 
-    if st.button(t("Avaliar ligação"), type="primary", use_container_width=True):
+    if st.button(t("Avaliar ligação"), key="avaliar_ligacao", type="primary", use_container_width=True):
         if any(m is None or m <= 0 for m in medidas):
             st.warning(t("Preencha as quatro medições com valores maiores que zero para avaliar."))
         else:
