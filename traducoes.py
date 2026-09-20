@@ -63,10 +63,10 @@ TRANSLATIONS = {
 }
 
 FLANGE_TYPES = {
-    "Soldado, Roscado, de Encaixe ou Cego": "Weld neck, threaded, socket weld or blind",
-    "de Virola": "Lap joint",
-    "Série A Cego": "Series A blind",
-    "Série A Soldado": "Series A weld neck"
+    "ASME B16.5 Soldado, Roscado, de Encaixe ou Cego": "Weld neck, threaded, socket weld or blind",
+    "ASME B16.5 de Virola": "Lap joint",
+    "ASME B16.47 Série A Cego": "Blind",
+    "ASME B16.47 Série A Soldado": "Weld neck",
 }
 
 
@@ -74,10 +74,17 @@ def traduzir(texto, idioma="pt"):
     return TRANSLATIONS.get(texto, texto) if idioma == "en" else texto
 
 
-def nome_tipo(texto, idioma="pt"):
-    if idioma != "en":
-        return texto
-    for origem, destino in FLANGE_TYPES.items():
-        if texto.endswith(origem):
-            return texto[:-len(origem)] + destino
-    return texto
+def nome_norma(norma, idioma="pt"):
+    if idioma == "en":
+        return norma.replace("Série A", "Series A")
+    return norma
+
+
+def nome_tipo(tipo, idioma="pt"):
+    """Retorna apenas o nome visível; mantém a chave técnica original nas tabelas."""
+    if idioma == "en":
+        return FLANGE_TYPES.get(tipo, tipo)
+    for prefixo in ("ASME B16.47 Série A ", "ASME B16.5 "):
+        if tipo.startswith(prefixo):
+            return tipo[len(prefixo):]
+    return tipo
