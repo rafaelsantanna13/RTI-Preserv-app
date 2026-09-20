@@ -28,6 +28,10 @@ def selecionar(label, opcoes, key, **kwargs):
 
 def main():
     st.set_page_config(page_title="FlangeCheck", page_icon="🔩", layout="centered")
+    # Reserva uma faixa vazia para a barra fixa do Streamlit no celular.
+    # O seletor deve começar abaixo da área ocupada por Share/Manage app.
+    st.markdown('<div aria-hidden="true" style="height: 80px;"></div>',
+                unsafe_allow_html=True)
     # Um único controle horizontal evita que duas colunas empilhem no celular.
     if "idioma" not in st.session_state:
         st.session_state["idioma"] = "pt"
