@@ -1,6 +1,7 @@
 """Consultas dimensionais e RTI com os critérios originais do projeto."""
 import json
 from pathlib import Path
+from estojos import consultar_estojo
 
 BASE = Path(__file__).resolve().parent
 
@@ -15,17 +16,23 @@ rti = carregar("ClasseRTI.json")
 def to_float(x):
     return float(str(x).replace(",", "."))
 
-def avaliar(nps, classe, tipo, diametro, mat_f, mat_e, fluido, hist, perda,
+def avaliar(nps, classe, tipo, mat_f, mat_e, fluido, hist, perda,
             tf_med, d_med, h_med, f_med):
 
     # buscar flange
     flange = next((f for f in flanges if f["nps_pol"] == nps and f["classe"] == classe and f["tipo"] == tipo), None)
 
-    # buscar estojo
-    estojo = next((e for e in estojos if e["diametro_nominal"] == diametro), None)
+    # O diâmetro nominal é determinado pelo flange também no cálculo,
+    # sem aceitar uma seleção manual incompatível com a norma/NPS/classe.
+    try:
+        estojo = consultar_estojo(tipo, nps, classe)["criterios"]
+    except ValueError as erro:
+        return str(erro)
 
-    if not flange or not estojo:
+    if not flange:
         return "Erro nos dados"
+    if not estojo:
+        return "Critérios de avaliação do estojo e da porca não cadastrados"
 
     tf_min = to_float(flange["tfmin_mm"])
 
