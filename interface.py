@@ -25,6 +25,11 @@ def t(texto):
     return traduzir(texto, st.session_state.get("idioma", "pt"))
 
 
+def exibir_nps(valor, idioma):
+    """Traduz apenas a vírgula decimal do rótulo; a chave técnica é preservada."""
+    return valor.replace(",", ".") if idioma == "en" else valor
+
+
 def ordem_nps(valor):
     return to_float(valor.split()[0])
 
@@ -114,8 +119,20 @@ def main():
         disponiveis = [f for f in flanges if f["tipo"] == tipo]
         c1, c2 = st.columns(2)
         with c1:
-            nps = selecionar(t("Diâmetro nominal · NPS (pol)"),
-                             sorted({f["nps_pol"] for f in disponiveis}, key=ordem_nps), "nps")
+            opcoes_nps = sorted({f["nps_pol"] for f in disponiveis}, key=ordem_nps)
+            chave_nps = "nps" if idioma_atual == "pt" else "nps_en"
+            nps_anterior = st.session_state.get("nps_canonico")
+            if nps_anterior not in opcoes_nps:
+                nps_anterior = opcoes_nps[0]
+            if (st.session_state.get("idioma_nps_anterior") != idioma_atual
+                    or st.session_state.get(chave_nps) not in opcoes_nps):
+                st.session_state[chave_nps] = nps_anterior
+            nps = selecionar(
+                t("Diâmetro nominal · NPS (pol)"), opcoes_nps, chave_nps,
+                format_func=lambda valor: exibir_nps(valor, idioma_atual),
+            )
+            st.session_state["nps_canonico"] = nps
+            st.session_state["idioma_nps_anterior"] = idioma_atual
         with c2:
             classe = selecionar(t("Classe do flange"),
                                 sorted({f["classe"] for f in disponiveis if f["nps_pol"] == nps}, key=int), "classe")
@@ -127,7 +144,7 @@ def main():
             st.stop()
         diametro = selecao["diametro_nominal"]
         st.metric(t("Diâmetro nominal do estojo · automático"), f'{selecao["diametro_pol"]}″')
-        st.caption(t("{diametro} mm · Definido por {norma}, NPS {nps} e classe {classe}.").format(diametro=numero(selecao["diametro_mm"]), norma=norma, nps=nps, classe=classe))
+        st.caption(t("{diametro} mm · Definido por {norma}, NPS {nps} e classe {classe}.").format(diametro=numero(selecao["diametro_mm"]), norma=nome_norma(norma, idioma_atual), nps=exibir_nps(nps, idioma_atual), classe=classe))
         st.caption(t("O diâmetro nominal é automático. O diâmetro medido em campo deve ser informado na etapa 2."))
         with st.expander(t("Norma de referência")):
             st.markdown(f"**{norma}**")
@@ -199,7 +216,7 @@ def main():
     if st.session_state.get("avaliacao_atual") == assinatura:
         st.divider()
         st.subheader(t("Resultado da avaliação"))
-        st.caption(t("NPS {nps} · Classe {classe} · Estojo {diametro}").format(nps=nps, classe=classe, diametro=diametro))
+        st.caption(t("NPS {nps} · Classe {classe} · Estojo {diametro}").format(nps=exibir_nps(nps, idioma_atual), classe=classe, diametro=diametro))
         resultado = avaliar(nps, classe, tipo, *medidas)
         aprovados = [d["aprovado"] for d in resultado["dimensoes"]]
         if resultado["aprovado"]:
