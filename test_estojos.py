@@ -101,7 +101,7 @@ class AutomaticoInterfaceTests(unittest.TestCase):
         self.assertNotIn("estojo", [s.key for s in app.selectbox])
         for widget in app.number_input:
             widget.set_value(100.)
-        app.button[0].click().run()
+        app.button(key="avaliar_ligacao").click().run()
         self.assertTrue(app.success)
         app.selectbox(key="classe").set_value("300").run()
         self.assertFalse(app.exception)
@@ -118,17 +118,17 @@ class AutomaticoInterfaceTests(unittest.TestCase):
         app.selectbox(key="nps").set_value("48").run()
         for widget in app.number_input:
             widget.set_value(300.)
-        app.button[0].click().run()
+        app.button(key="avaliar_ligacao").click().run()
         self.assertTrue(app.success)
         app.selectbox(key="classe").set_value("900").run()
         self.assertEqual(app.metric[0].value, "4″")
         self.assertFalse(app.exception)
         self.assertFalse(app.success)
-        self.assertFalse(app.button)
+        self.assertFalse(any(b.key == "avaliar_ligacao" for b in app.button))
         self.assertTrue(any("não estão cadastrados" in w.value for w in app.warning))
         app.selectbox(key="classe").set_value("150").run()
         self.assertFalse(app.exception)
-        self.assertTrue(app.button)
+        self.assertTrue(any(b.key == "avaliar_ligacao" for b in app.button))
         self.assertEqual(app.metric[0].value, "1 1/2″")
 
 
