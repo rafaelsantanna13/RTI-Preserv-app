@@ -102,6 +102,22 @@ def main():
         st.caption(t("O diâmetro nominal é automático. O diâmetro medido em campo deve ser informado na etapa 2."))
         with st.expander(t("Norma de referência")):
             st.markdown(f"**{norma}**")
+        with st.expander(t("Referências dos valores mínimos aceitáveis")):
+            st.markdown(
+                "1. **Brown, W.; Long, S. (2017).** "
+                "[Acceptable Levels of Corrosion for Pressure Boundary Bolted Joints]"
+                "(https://doi.org/10.1115/PVP2017-65507). "
+                "**ASME 2017 Pressure Vessels and Piping Conference (PVP 2017).** "
+                "Paper No. **PVP2017-65507**. "
+                "DOI: 10.1115/PVP2017-65507.\\n\\n"
+                "2. **Brown, W.; Long, S. (2018).** "
+                "[Update on Allowable Limits for Corroded Pressure Boundary Bolted Joints]"
+                "(https://doi.org/10.1115/PVP2018-85005). "
+                "**ASME 2018 Pressure Vessels and Piping Conference (PVP 2018).** "
+                "Paper No. **PVP2018-85005**. "
+                "DOI: 10.1115/PVP2018-85005."
+            )
+            st.caption(t("Referências técnicas da avaliação de corrosão. Os limites numéricos utilizados são os cadastrados no aplicativo; a correspondência de cada valor com os artigos não foi verificada nesta revisão."))
 
     estojo = selecao["criterios"]
     if estojo is None:
